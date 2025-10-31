@@ -5,7 +5,6 @@ resource "aws_instance" "web1" {
   subnet_id              = var.private_subnet_ids[0]
   vpc_security_group_ids = [var.web_sg_id]
   key_name               = var.key_name
-  user_data              = file("${path.module}/userdata_httpd.sh")
   user_data_replace_on_change = true
 
   tags = { Name = "${var.project_name}-web-server-1" }
@@ -18,7 +17,6 @@ resource "aws_instance" "web2" {
   subnet_id              = var.private_subnet_ids[1]
   vpc_security_group_ids = [var.web_sg_id]
   key_name               = var.key_name
-  user_data              = file("${path.module}/userdata_httpd.sh")
   user_data_replace_on_change = true
 
   tags = { Name = "${var.project_name}-web-server-2" }
