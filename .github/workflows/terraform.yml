@@ -9,29 +9,25 @@ on:
         default: "apply"
         type: choice
         options: [apply, destroy]
-
-      aws_role_arn:
-        description: "AWS Role ARN for OIDC"
-        required: true
-
+        
       project_name:
-        description: "Project name (e.g. watanababy)"
+        description: "e.g. watanababy"
         required: true
 
       vpc_cidr:
-        description: "VPC CIDR (e.g. 10.0.0.0/24)"
+        description: "e.g. 10.0.0.0/24"
         required: true
 
       public_subnet_cidrs:
-        description: "Public Subnets (1 per line)"
+        description: 'JSON array: ["10.0.0.0/28","10.0.0.16/28"]'
         required: true
 
       private_subnet_cidrs:
-        description: "Private Subnets (1 per line)"
+        description: 'JSON array: ["10.0.0.32/28","10.0.0.48/28"]'
         required: true
 
       allowed_ip:
-        description: "Allowed IP CIDR (e.g. 11.22.33.44/32)"
+        description: "e.g. 36.14.103.150/32"
         required: true
 
 permissions:
@@ -64,20 +60,6 @@ jobs:
           path: ./.terraform
           key: ${{ runner.os }}-tf-${{ hashFiles('**/.terraform.lock.hcl') }}
 
-      - name: Convert multiline inputs to JSON list
-        id: cidr_lists
-        shell: bash
-        run: |
-          to_json_list () {
-            awk 'NF { gsub(/\r/,""); printf "%s\"%s\"", (NR==1?"[":","), $0 } END { print (NR>0?"]":"[]") }'
-          }
-
-          PUB=$(printf "%s" "${{ github.event.inputs.public_subnet_cidrs }}"  | to_json_list)
-          PRI=$(printf "%s" "${{ github.event.inputs.private_subnet_cidrs }}" | to_json_list)
-
-          echo "PUB=${PUB}" >> $GITHUB_OUTPUT
-          echo "PRI=${PRI}" >> $GITHUB_OUTPUT
-
       - name: Terraform init
         working-directory: ${{ env.TF_DIR }}
         run: terraform init
@@ -89,8 +71,8 @@ jobs:
             -var="region=${{ env.AWS_REGION }}" \
             -var="project_name=${{ github.event.inputs.project_name }}" \
             -var="vpc_cidr=${{ github.event.inputs.vpc_cidr }}" \
-            -var="public_subnet_cidrs=${{ steps.cidr_lists.outputs.PUB }}" \
-            -var="private_subnet_cidrs=${{ steps.cidr_lists.outputs.PRI }}" \
+            -var='public_subnet_cidrs=${{ toJson(fromJSON(github.event.inputs.public_subnet_cidrs)) }}' \
+            -var='private_subnet_cidrs=${{ toJson(fromJSON(github.event.inputs.private_subnet_cidrs)) }}' \
             -var="allowed_ip=${{ github.event.inputs.allowed_ip }}"
 
       - name: Terraform apply
@@ -101,8 +83,8 @@ jobs:
             -var="region=${{ env.AWS_REGION }}" \
             -var="project_name=${{ github.event.inputs.project_name }}" \
             -var="vpc_cidr=${{ github.event.inputs.vpc_cidr }}" \
-            -var="public_subnet_cidrs=${{ steps.cidr_lists.outputs.PUB }}" \
-            -var="private_subnet_cidrs=${{ steps.cidr_lists.outputs.PRI }}" \
+            -var='public_subnet_cidrs=${{ toJson(fromJSON(github.event.inputs.public_subnet_cidrs)) }}' \
+            -var='private_subnet_cidrs=${{ toJson(fromJSON(github.event.inputs.private_subnet_cidrs)) }}' \
             -var="allowed_ip=${{ github.event.inputs.allowed_ip }}"
 
       - name: Show bastion public IP
@@ -117,6 +99,6 @@ jobs:
             -var="region=${{ env.AWS_REGION }}" \
             -var="project_name=${{ github.event.inputs.project_name }}" \
             -var="vpc_cidr=${{ github.event.inputs.vpc_cidr }}" \
-            -var="public_subnet_cidrs=${{ steps.cidr_lists.outputs.PUB }}" \
-            -var="private_subnet_cidrs=${{ steps.cidr_lists.outputs.PRI }}" \
+            -var='public_subnet_cidrs=${{ toJson(fromJSON(github.event.inputs.public_subnet_cidrs)) }}' \
+            -var='private_subnet_cidrs=${{ toJson(fromJSON(github.event.inputs.private_subnet_cidrs)) }}' \
             -var="allowed_ip=${{ github.event.inputs.allowed_ip }}"
