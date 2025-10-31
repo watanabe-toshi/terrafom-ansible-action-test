@@ -3,6 +3,10 @@ name: Terraform Apply/Destroy
 on:
   workflow_dispatch:
     inputs:
+      aws_role_arn:
+        description: "AWS Role ARN for OIDC"
+        required: true
+
       action:
         description: "apply or destroy"
         required: false
@@ -69,36 +73,36 @@ jobs:
         run: |
           terraform plan \
             -var="region=${{ env.AWS_REGION }}" \
-            -var="project_name=${{ github.event.inputs.project_name }}" \
-            -var="vpc_cidr=${{ github.event.inputs.vpc_cidr }}" \
-            -var='public_subnet_cidrs=${{ toJson(fromJSON(github.event.inputs.public_subnet_cidrs)) }}' \
-            -var='private_subnet_cidrs=${{ toJson(fromJSON(github.event.inputs.private_subnet_cidrs)) }}' \
-            -var="allowed_ip=${{ github.event.inputs.allowed_ip }}"
+            -var="project_name=${{ inputs.project_name }}" \
+            -var="vpc_cidr=${{ inputs.vpc_cidr }}" \
+            -var='public_subnet_cidrs=${{ toJson(fromJSON(inputs.public_subnet_cidrs)) }}' \
+            -var='private_subnet_cidrs=${{ toJson(fromJSON(inputs.private_subnet_cidrs)) }}' \
+            -var="allowed_ip=${{ inputs.allowed_ip }}"
 
       - name: Terraform apply
-        if: ${{ github.event.inputs.action == 'apply' }}
+        if: ${{ inputs.action == 'apply' }}
         working-directory: ${{ env.TF_DIR }}
         run: |
           terraform apply -auto-approve \
             -var="region=${{ env.AWS_REGION }}" \
-            -var="project_name=${{ github.event.inputs.project_name }}" \
-            -var="vpc_cidr=${{ github.event.inputs.vpc_cidr }}" \
-            -var='public_subnet_cidrs=${{ toJson(fromJSON(github.event.inputs.public_subnet_cidrs)) }}' \
-            -var='private_subnet_cidrs=${{ toJson(fromJSON(github.event.inputs.private_subnet_cidrs)) }}' \
-            -var="allowed_ip=${{ github.event.inputs.allowed_ip }}"
+            -var="project_name=${{ inputs.project_name }}" \
+            -var="vpc_cidr=${{ inputs.vpc_cidr }}" \
+            -var='public_subnet_cidrs=${{ toJson(fromJSON(inputs.public_subnet_cidrs)) }}' \
+            -var='private_subnet_cidrs=${{ toJson(fromJSON(inputs.private_subnet_cidrs)) }}' \
+            -var="allowed_ip=${{ inputs.allowed_ip }}"
 
       - name: Show bastion public IP
-        if: ${{ github.event.inputs.action == 'apply' }}
+        if: ${{ inputs.action == 'apply' }}
         run: terraform output -raw bastion_public_ip
 
       - name: Terraform destroy
-        if: ${{ github.event.inputs.action == 'destroy' }}
+        if: ${{ inputs.action == 'destroy' }}
         working-directory: ${{ env.TF_DIR }}
         run: |
           terraform destroy -auto-approve \
             -var="region=${{ env.AWS_REGION }}" \
-            -var="project_name=${{ github.event.inputs.project_name }}" \
-            -var="vpc_cidr=${{ github.event.inputs.vpc_cidr }}" \
-            -var='public_subnet_cidrs=${{ toJson(fromJSON(github.event.inputs.public_subnet_cidrs)) }}' \
-            -var='private_subnet_cidrs=${{ toJson(fromJSON(github.event.inputs.private_subnet_cidrs)) }}' \
-            -var="allowed_ip=${{ github.event.inputs.allowed_ip }}"
+            -var="project_name=${{ inputs.project_name }}" \
+            -var="vpc_cidr=${{ inputs.vpc_cidr }}" \
+            -var='public_subnet_cidrs=${{ toJson(fromJSON(inputs.public_subnet_cidrs)) }}' \
+            -var='private_subnet_cidrs=${{ toJson(fromJSON(inputs.private_subnet_cidrs)) }}' \
+            -var="allowed_ip=${{ inputs.allowed_ip }}"
