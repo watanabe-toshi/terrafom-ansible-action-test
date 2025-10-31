@@ -105,6 +105,10 @@ jobs:
             -var="private_subnet_cidrs=${{ steps.cidr_lists.outputs.PRI }}" \
             -var="allowed_ip=${{ github.event.inputs.allowed_ip }}"
 
+      - name: Show bastion public IP
+        if: ${{ github.event.inputs.action == 'apply' }}
+        run: terraform output -raw bastion_public_ip
+
       - name: Terraform destroy
         if: ${{ github.event.inputs.action == 'destroy' }}
         working-directory: ${{ env.TF_DIR }}
