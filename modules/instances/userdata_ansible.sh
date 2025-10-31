@@ -8,3 +8,7 @@ yum install -y ansible
 
 # バージョン確認ログ出力
 ansible --version > /var/log/ansible-version.log
+
+#botoインストール
+yum install python-pip
+pip install boto
