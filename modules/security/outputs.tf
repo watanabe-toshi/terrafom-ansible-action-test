@@ -9,7 +9,3 @@ output "ec2_sg_id" {
 output "ansible_sg_id" {
   value = aws_security_group.ansible_sg.id
 }
-
-output "config_manager_sg_id" {
-  value = aws_security_group.config_manager_sg.id
-}

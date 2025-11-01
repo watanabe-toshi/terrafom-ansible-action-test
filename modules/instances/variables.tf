@@ -38,11 +38,6 @@ variable "ansible_sg_id" {
   description = "ansible HostのセキュリティグループID"
 }
 
-variable "config_manager_sg_id" {
-  type        = string
-  description = "config-managerのセキュリティグループID"
-}
-
 variable "target_group_arn" {
   type        = string
   description = "ALBのターゲットグループARN"
