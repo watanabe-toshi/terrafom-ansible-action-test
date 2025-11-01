@@ -7,8 +7,7 @@ resource "aws_instance" "web1" {
   key_name               = var.key_name
   user_data_replace_on_change = true
 
-  tags = { Name = "${var.project_name}-web1" 
-           Type = web1
+  tags = { Name = "Web-${var.project_name}" 
   }
 }
 
@@ -21,8 +20,7 @@ resource "aws_instance" "web2" {
   key_name               = var.key_name
   user_data_replace_on_change = true
 
-  tags = { Name = "${var.project_name}-web2" 
-           Type = web02 
+  tags = { Name = "web-${var.project_name}" 
   }
 }
 
@@ -52,6 +50,5 @@ resource "aws_instance" "ansible" {
   iam_instance_profile        = var.iam_instance_profile
 
   tags = { Name = "${var.project_name}-ansible" 
-           Type = ansible 
            }
 }
