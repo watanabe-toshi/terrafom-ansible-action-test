@@ -1,0 +1,31 @@
+#!/bin/bash
+set -euo pipefail
+
+PROXY_HOST="${proxy_ip}"
+PROXY_PORT="3128"
+PROXY_AUTH=""
+NO_PROXY_LIST="169.254.169.254,127.0.0.1,localhost"
+
+PROXY_URL="http://${PROXY_AUTH}${PROXY_HOST}:${PROXY_PORT}"
+
+. /etc/os-release || true
+ID=${ID:-unknown}
+VERSION_ID=${VERSION_ID:-unknown}
+
+if [ "$ID" = "amzn" ] && [[ "$VERSION_ID" =~ ^2 ]]; then
+  CONF="/etc/yum.conf"
+else
+  CONF="/etc/dnf/dnf.conf"
+fi
+
+echo "proxy=${PROXY_URL}" >> "$CONF"
+
+cat >/etc/profile.d/proxy.sh <<EOF
+export http_proxy=${PROXY_URL}
+export https_proxy=${PROXY_URL}
+export no_proxy=${NO_PROXY_LIST}
+export HTTP_PROXY=${PROXY_URL}
+export HTTPS_PROXY=${PROXY_URL}
+export NO_PROXY=${NO_PROXY_LIST}
+EOF
+chmod 644 /etc/profile.d/proxy.sh
