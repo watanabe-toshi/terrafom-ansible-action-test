@@ -13,7 +13,7 @@ on:
         default: "apply"
         type: choice
         options: [apply, destroy]
-        
+
       project_name:
         description: "e.g. watanababy"
         required: true
@@ -29,10 +29,25 @@ on:
       private_subnet_cidrs:
         description: 'JSON array: ["10.0.0.32/28","10.0.0.48/28"]'
         required: true
-
+        
       allowed_ip:
         description: "e.g. 36.14.103.150/32"
         required: true
+
+      tf_state_bucket:
+        description: "TF_STATE_BUCKET: 既存 S3 バケット名"
+        required: true
+        type: string
+
+      tf_lock_table:
+        description: "TF_LOCK_TABLE: 既存 DynamoDB テーブル名"
+        required: true
+        type: string
+
+      tf_state_key:
+        description: "TF_STATE_KEY: stateキー (例: test/dev/terraform.tfstate)"
+        required: true
+        type: string
 
 permissions:
   id-token: write
@@ -67,7 +82,12 @@ jobs:
       - name: Terraform init
         working-directory: ${{ env.TF_DIR }}
         run: terraform init
-
+          -backend-config="bucket=${{ inputs.tf_state_bucket }}" \
+          -backend-config="key=${{ inputs.tf_state_key }}" \
+          -backend-config="region=${{ env.AWS_REGION }}" \
+          -backend-config="dynamodb_table=${{ inputs.tf_lock_table }}"
+          -reconfigure
+        
       - name: Terraform plan
         working-directory: ${{ env.TF_DIR }}
         run: |
