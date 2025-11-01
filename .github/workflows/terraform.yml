@@ -4,48 +4,48 @@ on:
   workflow_dispatch:
     inputs:
       aws_role_arn:
-        description: "AWS Role ARN for OIDC"
+        description: "OIDCのARNを記述"
         required: true
 
       action:
-        description: "apply or destroy"
+        description: "apply or destroyのどちらかを選択"
         required: false
         default: "apply"
         type: choice
         options: [apply, destroy]
 
       project_name:
-        description: "e.g. watanababy"
+        description: "ユニークなリソース名を記述"
         required: true
 
       vpc_cidr:
-        description: "e.g. 10.0.0.0/24"
+        description: "VPCのアドレスレンジを記述(他と被らない範囲)e.g. 10.0.0.0/24"
         required: true
 
       public_subnet_cidrs:
-        description: 'JSON array: ["10.0.0.0/28","10.0.0.16/28"]'
+        description: 'パブリックのサブネットをJSON arrayでe.g. ["10.0.0.0/28","10.0.0.16/28"]'
         required: true
 
       private_subnet_cidrs:
-        description: 'JSON array: ["10.0.0.32/28","10.0.0.48/28"]'
+        description: 'プライベートのサブネットをJSON arrayでe.g. ["10.0.0.32/28","10.0.0.48/28"]'
         required: true
         
       allowed_ip:
-        description: "e.g. 36.14.103.150/32"
+        description: "端末のグローバルIPを記述e.g. 10.20.100.150/32"
         required: true
 
       tf_state_bucket:
-        description: "TF_STATE_BUCKET: 既存 S3 バケット名"
+        description: "TF_STATE_BUCKET: tfstateの保管先のS3を指定"
         required: true
         type: string
 
       tf_lock_table:
-        description: "TF_LOCK_TABLE: 既存 DynamoDB テーブル名"
+        description: "TF_LOCK_TABLE: tfstateの保管先のDynamoDBテーブル名を指定"
         required: true
         type: string
 
       tf_state_key:
-        description: "TF_STATE_KEY: stateキー (例: test/dev/terraform.tfstate)"
+        description: "TF_STATE_KEY: tfstateキーを入力(ユニークな値/terraform.tfstate) (例: watanababy/terraform.tfstate)"
         required: true
         type: string
 
