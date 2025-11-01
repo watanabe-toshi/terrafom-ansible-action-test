@@ -81,12 +81,13 @@ jobs:
 
       - name: Terraform init
         working-directory: ${{ env.TF_DIR }}
-        run: terraform init \
-          -backend-config="bucket=${{ inputs.tf_state_bucket }}" \
-          -backend-config="key=${{ inputs.tf_state_key }}" \
-          -backend-config="region=${{ env.AWS_REGION }}" \
-          -backend-config="dynamodb_table=${{ inputs.tf_lock_table }}" \
-          -reconfigure
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ inputs.tf_state_bucket }}" \
+            -backend-config="key=${{ inputs.tf_state_key }}" \
+            -backend-config="region=${{ env.AWS_REGION }}" \
+            -backend-config="dynamodb_table=${{ inputs.tf_lock_table }}" \
+            -reconfigure
         
       - name: Terraform plan
         working-directory: ${{ env.TF_DIR }}
