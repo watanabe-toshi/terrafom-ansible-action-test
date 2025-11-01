@@ -33,7 +33,7 @@ module "instances" {
   web_sg_id             = module.security.ec2_sg_id
   ansible_sg_id         = module.security.ansible_sg_id
   target_group_arn      = module.alb.target_group_arn
-  iam_instance_profile  = module.ec2_iam_role.instance_profile_name
+  iam_instance_profile  = module.iam_role.instance_profile_name
 }
 
 module "iam_role" {
