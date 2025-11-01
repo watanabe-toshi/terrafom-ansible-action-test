@@ -20,7 +20,7 @@ resource "aws_security_group" "alb_sg" {
 
 resource "aws_security_group" "ec2_sg" {
   name        = "${var.project_name}-ec2-sg"
-  description = "Allow HTTP from ALB and SSH from config-manager/ansible"
+  description = "Allow HTTP from ALB and SSH from ansible"
   vpc_id      = var.vpc_id
 
   ingress {

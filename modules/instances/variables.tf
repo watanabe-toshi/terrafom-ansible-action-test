@@ -25,7 +25,7 @@ variable "public_subnet_id" {
 
 variable "private_subnet_ids" {
   type        = list(string)
-  description = "config-manager・Webサーバ用のプライベートサブネットIDs（2つ）"
+  description = "Webサーバ用のプライベートサブネットIDs（2つ）"
 }
 
 variable "web_sg_id" {
