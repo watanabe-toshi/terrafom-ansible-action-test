@@ -91,9 +91,9 @@ jobs:
             -var='private_subnet_cidrs=${{ toJson(fromJSON(inputs.private_subnet_cidrs)) }}' \
             -var="allowed_ip=${{ inputs.allowed_ip }}"
 
-      - name: Show bastion public IP
+      - name: Show ansible public IP
         if: ${{ inputs.action == 'apply' }}
-        run: terraform output -raw bastion_public_ip
+        run: terraform output -raw ansible_public_ip
 
       - name: Terraform destroy
         if: ${{ inputs.action == 'destroy' }}

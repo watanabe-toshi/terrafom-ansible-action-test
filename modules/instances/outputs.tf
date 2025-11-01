@@ -1,9 +1,9 @@
-output "bastion_public_ip" {
-  description = "Bastion public IPv4"
-  value       = aws_instance.bastion.public_ip
+output "ansible_public_ip" {
+  description = "ansible public IPv4"
+  value       = aws_instance.ansible.public_ip
 }
 
-output "bastion_public_dns" {
-  description = "Bastion public DNS"
-  value       = aws_instance.bastion.public_dns
+output "ansible_public_dns" {
+  description = "ansible public DNS"
+  value       = aws_instance.ansible.public_dns
 }

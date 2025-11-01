@@ -20,7 +20,7 @@ variable "key_name" {
 
 variable "public_subnet_id" {
   type        = string
-  description = "Bastion用のパブリックサブネットID"
+  description = "ansible用のパブリックサブネットID"
 }
 
 variable "private_subnet_ids" {
@@ -33,9 +33,9 @@ variable "web_sg_id" {
   description = "Webサーバに適用するセキュリティグループID"
 }
 
-variable "bastion_sg_id" {
+variable "ansible_sg_id" {
   type        = string
-  description = "Bastion HostのセキュリティグループID"
+  description = "ansible HostのセキュリティグループID"
 }
 
 variable "config_manager_sg_id" {
@@ -46,4 +46,8 @@ variable "config_manager_sg_id" {
 variable "target_group_arn" {
   type        = string
   description = "ALBのターゲットグループARN"
+}
+
+variable "iam_instance_profile" {
+  type = string
 }

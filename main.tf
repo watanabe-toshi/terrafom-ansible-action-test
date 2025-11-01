@@ -7,14 +7,6 @@ module "network" {
   availability_zones   = var.availability_zones
 }
 
-module "vpce_s3" {
-  source          = "./modules/vpc_endpoints/s3"
-  project_name    = var.project_name
-  vpc_id          = module.network.vpc_id
-  route_table_ids = module.network.private_route_table_ids
-  service_name    = var.service_name
-}
-
 module "security" { 
   source               = "./modules/security" 
   project_name         = var.project_name
@@ -39,7 +31,12 @@ module "instances" {
   public_subnet_id      = module.network.public_subnet_ids[0]
   private_subnet_ids    = module.network.private_subnet_ids
   web_sg_id             = module.security.ec2_sg_id
-  bastion_sg_id         = module.security.bastion_sg_id
-  config_manager_sg_id  = module.security.config_manager_sg_id
+  ansible_sg_id         = module.security.ansible_sg_id
   target_group_arn      = module.alb.target_group_arn
+  iam_instance_profile  = module.ec2_iam_role.instance_profile_name
+}
+
+module "iam_role" {
+  source    = "./modules/iam_role"
+  role_name = "${var.project_name}-ansible-role"
 }

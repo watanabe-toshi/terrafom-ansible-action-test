@@ -6,8 +6,8 @@ output "ec2_sg_id" {
   value = aws_security_group.ec2_sg.id
 }
 
-output "bastion_sg_id" {
-  value = aws_security_group.bastion_sg.id
+output "ansible_sg_id" {
+  value = aws_security_group.ansible_sg.id
 }
 
 output "config_manager_sg_id" {

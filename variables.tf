@@ -55,8 +55,3 @@ variable "instance_type" {
   type        = string
   default     = "t3.micro"
 }
-
-variable "service_name" {
-  type        = string
-  description = "S3 VPCE の service name (例: com.amazonaws.ap-northeast-1.s3)"
-}
