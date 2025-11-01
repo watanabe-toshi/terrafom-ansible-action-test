@@ -1,4 +1,4 @@
-# Webサーバ1
+# Web server 1
 resource "aws_instance" "web1" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
@@ -12,7 +12,7 @@ resource "aws_instance" "web1" {
   }
 }
 
-# Webサーバ2
+# Web server 2
 resource "aws_instance" "web2" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
@@ -49,7 +49,7 @@ resource "aws_instance" "ansible" {
   key_name                    = var.key_name
   user_data                   = file("${path.module}/userdata_ansible.sh")
   user_data_replace_on_change = true
-  iam_instance_profile 　　　　= var.iam_instance_profile
+  iam_instance_profile        = var.iam_instance_profile
 
   tags = { Name = "${var.project_name}-ansible" 
            Type = ansible 
