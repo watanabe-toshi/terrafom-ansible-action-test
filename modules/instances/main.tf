@@ -5,6 +5,9 @@ resource "aws_instance" "web1" {
   subnet_id              = var.private_subnet_ids[0]
   vpc_security_group_ids = [var.web_sg_id]
   key_name               = var.key_name
+  user_data              = templatefile("${path.module}/userdata_web.tmpl", {
+  proxy_ip = aws_instance.ansible.private_ip
+})
   user_data_replace_on_change = true
 
   tags = { 
@@ -21,6 +24,9 @@ resource "aws_instance" "web2" {
   subnet_id              = var.private_subnet_ids[1]
   vpc_security_group_ids = [var.web_sg_id]
   key_name               = var.key_name
+  user_data              = templatefile("${path.module}/userdata_web.tmpl", {
+  proxy_ip = aws_instance.ansible.private_ip
+})
   user_data_replace_on_change = true
 
   tags = { 
