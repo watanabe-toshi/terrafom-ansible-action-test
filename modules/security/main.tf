@@ -45,16 +45,27 @@ ingress {
   }
 }
 
-resource "aws_security_group" "ansible_sg" {
+resource "aws_security_group" "ansible_sg" { 
   name        = "ansible-sg"
-  description = "Allow SSH from allowed IP"
+  description = "Allow SSH and proxy access"
   vpc_id      = var.vpc_id
 
+  # SSH
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = [var.allowed_ip]
+    description = "Allow SSH"
+  }
+
+  # Proxy access from Web SG
+  ingress {
+    from_port                = 3128
+    to_port                  = 3128
+    protocol                 = "tcp"
+    security_groups          = [aws_security_group.ec2_sg.id] # ←ココ重要
+    description              = "Allow HTTP proxy access from Web SG"
   }
 
   egress {
