@@ -16,18 +16,16 @@ else
   sed -i "s|^proxy=.*$|proxy=$${PROXY_URL}|" "$CONF"
 fi
 
-# シェルの環境変数
-cat >/etc/profile.d/proxy.sh <<'EOF'
-# NOTE: このファイルはログイン時に読み込まれます
+# シェルの環境変数（ログイン時に展開させたいので HEREDOC はクォートしない）
+cat >/etc/profile.d/proxy.sh <<EOF
 export http_proxy=$${PROXY_URL}
 export https_proxy=$${PROXY_URL}
-export no_proxy=${NO_PROXY_LIST}
+export no_proxy=$${NO_PROXY_LIST}
 export HTTP_PROXY=$${PROXY_URL}
 export HTTPS_PROXY=$${PROXY_URL}
-export NO_PROXY=${NO_PROXY_LIST}
+export NO_PROXY=$${NO_PROXY_LIST}
 EOF
 chmod 644 /etc/profile.d/proxy.sh
 
 # キャッシュ掃除（失敗しても続行）
 dnf -y clean all || true
-rm -rf /var/cache/dnf
