@@ -61,6 +61,17 @@ resource "aws_vpc_security_group_ingress_rule" "ec2_from_alb_http" {
   description                  = "HTTP from ALB SG"
 }
 
+# ローカル-> ALB に HTTP(80) を許可
+resource "aws_vpc_security_group_ingress_rule" "alb_from_local_http" {
+  count                        = var.enable_alb ? 1 : 0   # ← module出力依存をやめる
+  security_group_id            = module.security.alb_sg_id
+  cidr_ipv4                    = var.allowed_ip
+  ip_protocol                  = "tcp"
+  from_port                    = 80
+  to_port                      = 80
+  description                  = "HTTP from local"
+}
+
 
 module "alb" {
   source             = "./modules/alb"
