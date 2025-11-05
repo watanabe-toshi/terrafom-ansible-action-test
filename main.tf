@@ -21,7 +21,7 @@ module "security" {
 # --- ここから「ルール」を分離 ---
 
 # 自端末 -> Ansible に SSH(22) を許可
-resource "aws_vpc_security_group_ingress_rule" "ec2_from_ansible_ssh" {
+resource "aws_vpc_security_group_ingress_rule" "ec2_from_local_ssh" {
   security_group_id            = module.security.ansible_sg_id
   cidr_ipv4                    = var.allowed_ip
   ip_protocol                  = "tcp"
