@@ -10,7 +10,7 @@ module "network" {
 module "security" {
   source = "./modules/security"
 
-  vpc_id          = var.vpc_id
+  vpc_id          = module.network.vpc_id
   ec2_sg_name     = "ec2"
   ansible_sg_name = "ansible"
 
