@@ -20,7 +20,17 @@ module "security" {
 
 # --- ここから「ルール」を分離 ---
 
-# Ansible -> EC2 に SSH(22) を許可
+# 自端末 -> Ansible に SSH(22) を許可
+resource "aws_vpc_security_group_ingress_rule" "ec2_from_ansible_ssh" {
+  security_group_id            = module.security.ansible_sg_id
+  cidr_ipv4                    = var.allowed_ip
+  ip_protocol                  = "tcp"
+  from_port                    = 22
+  to_port                      = 22
+  description                  = "SSH from Ansible SG"
+}
+
+# Ansible -> Web Server に SSH(22) を許可
 resource "aws_vpc_security_group_ingress_rule" "ec2_from_ansible_ssh" {
   security_group_id            = module.security.ec2_sg_id
   referenced_security_group_id = module.security.ansible_sg_id
@@ -30,7 +40,7 @@ resource "aws_vpc_security_group_ingress_rule" "ec2_from_ansible_ssh" {
   description                  = "SSH from Ansible SG"
 }
 
-# EC2 -> Ansible に 3128 を許可（必要な場合のみ）
+# Web Server -> Ansible に 3128 を許可（必要な場合のみ）
 resource "aws_vpc_security_group_ingress_rule" "ansible_from_ec2_proxy" {
   security_group_id            = module.security.ansible_sg_id
   referenced_security_group_id = module.security.ec2_sg_id
@@ -40,7 +50,7 @@ resource "aws_vpc_security_group_ingress_rule" "ansible_from_ec2_proxy" {
   description                  = "3128 from EC2 SG"
 }
 
-# ALB -> EC2 に HTTP(80) を許可
+# ALB -> Web Server に HTTP(80) を許可
 resource "aws_vpc_security_group_ingress_rule" "ec2_from_alb_http" {
   count                        = var.enable_alb ? 1 : 0   # ← module出力依存をやめる
   security_group_id            = module.security.ec2_sg_id
