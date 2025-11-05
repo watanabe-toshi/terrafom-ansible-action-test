@@ -1,3 +1,8 @@
+variable "enable_alb" {
+  type    = bool
+  default = true
+}
+
 variable "aws_region" {
   type        = string
   description = "AWS region"
