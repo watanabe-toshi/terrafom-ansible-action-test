@@ -1,77 +1,45 @@
-resource "aws_security_group" "alb_sg" {
-  name        = "${var.project_name}-alb-sg"
-  description = "Allow HTTP from allowed IP"
+# SG本体だけ作る（インラインの相互参照ルールはNG）
+resource "aws_security_group" "ec2" {
+  name        = var.ec2_sg_name
+  description = "EC2 SG"
   vpc_id      = var.vpc_id
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = [var.allowed_ip]
+  # 必要ならデフォルトegressを開放（好みで調整）
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = []
   }
+}
+
+resource "aws_security_group" "ansible" {
+  name        = var.ansible_sg_name
+  description = "Ansible SG"
+  vpc_id      = var.vpc_id
 
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = []
   }
 }
 
-resource "aws_security_group" "ec2_sg" {
-  name        = "${var.project_name}-ec2-sg"
-  description = "Allow HTTP from ALB and SSH from ansible"
+# （使っていれば）ALB用
+resource "aws_security_group" "alb" {
+  count       = var.create_alb_sg ? 1 : 0
+  name        = var.alb_sg_name
+  description = "ALB SG"
   vpc_id      = var.vpc_id
-
-  ingress {
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
-    security_groups = [aws_security_group.alb_sg.id]
-  }
-
-ingress {
-  from_port       = 22
-  to_port         = 22
-  protocol        = "tcp"
-  security_groups = [aws_security_group.ansible_sg.id] # ← ansibleからOK
-}
 
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-resource "aws_security_group" "ansible_sg" { 
-  name        = "ansible-sg"
-  description = "Allow SSH and proxy access"
-  vpc_id      = var.vpc_id
-
-  # SSH
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.allowed_ip]
-    description = "Allow SSH"
-  }
-
-  # Proxy access from Web SG
-  ingress {
-    from_port                = 3128
-    to_port                  = 3128
-    protocol                 = "tcp"
-    security_groups          = [aws_security_group.ec2_sg.id] # ←ココ重要
-    description              = "Allow HTTP proxy access from Web SG"
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = []
   }
 }
