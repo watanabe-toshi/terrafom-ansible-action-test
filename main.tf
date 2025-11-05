@@ -53,25 +53,25 @@ resource "aws_vpc_security_group_ingress_rule" "ec2_from_alb_http" {
 
 
 module "alb" {
-  source               = "./modules/alb"
-  project_name         = var.project_name
-  vpc_id               = module.network.vpc_id
-  subnet_ids           = module.network.public_subnet_ids
-  alb_security_group   = module.security.alb_sg_id
+  source             = "./modules/alb"
+  project_name       = var.project_name
+  vpc_id             = module.network.vpc_id
+  subnet_ids         = module.network.public_subnet_ids
+  alb_security_group = module.security.alb_sg_id
 }
 
 module "instances" {
-  source                = "./modules/instances"
-  project_name          = var.project_name
-  ami_id                = var.ami_id
-  instance_type         = "t3.micro"
-  key_name              = var.key_name
-  public_subnet_id      = module.network.public_subnet_ids[0]
-  private_subnet_ids    = module.network.private_subnet_ids
-  web_sg_id             = module.security.ec2_sg_id
-  ansible_sg_id         = module.security.ansible_sg_id
-  target_group_arn      = module.alb.target_group_arn
-  iam_instance_profile  = module.iam_role.instance_profile_name
+  source               = "./modules/instances"
+  project_name         = var.project_name
+  ami_id               = var.ami_id
+  instance_type        = "t3.micro"
+  key_name             = var.key_name
+  public_subnet_id     = module.network.public_subnet_ids[0]
+  private_subnet_ids   = module.network.private_subnet_ids
+  web_sg_id            = module.security.ec2_sg_id
+  ansible_sg_id        = module.security.ansible_sg_id
+  target_group_arn     = module.alb.target_group_arn
+  iam_instance_profile = module.iam_role.instance_profile_name
 }
 
 module "iam_role" {
