@@ -4,28 +4,30 @@ set -euo pipefail
 # terraform templatefile() で渡す変数: proxy_ip
 PROXY_HOST="${proxy_ip}"
 PROXY_PORT="3128"
-PROXY_URL="http://${PROXY_HOST}:${PROXY_PORT}"
+PROXY_URL="http://$${PROXY_HOST}:$${PROXY_PORT}"
 NO_PROXY_LIST="169.254.169.254,127.0.0.1,localhost"
 
 # dnf のプロキシ設定
 CONF="/etc/dnf/dnf.conf"
 touch "$CONF"
 if ! grep -q '^proxy=' "$CONF"; then
-  echo "proxy=${PROXY_URL}" >> "$CONF"
+  echo "proxy=$${PROXY_URL}" >> "$CONF"
 else
-  sed -i "s|^proxy=.*$|proxy=${PROXY_URL}|" "$CONF"
+  sed -i "s|^proxy=.*$|proxy=$${PROXY_URL}|" "$CONF"
 fi
 
 # シェルの環境変数
-cat >/etc/profile.d/proxy.sh <<EOF
-export http_proxy=${PROXY_URL}
-export https_proxy=${PROXY_URL}
+cat >/etc/profile.d/proxy.sh <<'EOF'
+# NOTE: このファイルはログイン時に読み込まれます
+export http_proxy=$${PROXY_URL}
+export https_proxy=$${PROXY_URL}
 export no_proxy=${NO_PROXY_LIST}
-export HTTP_PROXY=${PROXY_URL}
-export HTTPS_PROXY=${PROXY_URL}
+export HTTP_PROXY=$${PROXY_URL}
+export HTTPS_PROXY=$${PROXY_URL}
 export NO_PROXY=${NO_PROXY_LIST}
 EOF
 chmod 644 /etc/profile.d/proxy.sh
 
 # キャッシュ掃除（失敗しても続行）
 dnf -y clean all || true
+rm -rf /var/cache/dnf
