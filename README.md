@@ -1,6 +1,28 @@
 # terrafom-ansible-action-test
-ansible実行環境をTerraformで構築し、Github-actionsでデプロイする
 
+## 概要
+ansible実行環境をTerraformで構築し、Github-actionsでデプロイするためのソース
+
+作成されるリソースは以下
+VPC
+
+subnet(pub/pri)
+
+InternetGateWay
+
+RouteTable
+
+EC2→Ansible実行サーバ1台(pub) Webサーバ2台(pri)
+
+※Ansible実行サーバにはsuqidのインストール
+
+webサーバにはdnf.confの書き換えをuserdataで実行
+
+SecurituGroup
+
+ApplicationLoadBalancer
+
+TargetGroup
 
 ## 実行方法
 Actions→画面左ペインより Terraform Apply/Destroyを選択
