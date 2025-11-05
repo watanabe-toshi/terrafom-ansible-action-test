@@ -14,7 +14,7 @@ module "security" {
   ec2_sg_name     = "ec2"
   ansible_sg_name = "ansible"
 
-  create_alb_sg = true
+  create_alb_sg = var.enable_alb   # ← ここをフラグに
   alb_sg_name   = "alb"
 }
 
@@ -42,7 +42,7 @@ resource "aws_vpc_security_group_ingress_rule" "ansible_from_ec2_proxy" {
 
 # ALB -> EC2 に HTTP(80) を許可
 resource "aws_vpc_security_group_ingress_rule" "ec2_from_alb_http" {
-  count                        = module.security.alb_sg_id == null ? 0 : 1
+  count                        = var.enable_alb ? 1 : 0   # ← module出力依存をやめる
   security_group_id            = module.security.ec2_sg_id
   referenced_security_group_id = module.security.alb_sg_id
   ip_protocol                  = "tcp"
