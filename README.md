@@ -2,7 +2,7 @@
 ansible実行環境をTerraformで構築し、Github-actionsでデプロイする
 
 
-#実行方法
+## 実行方法
 Actions→画面左ペインより Terraform Apply/Destroyを選択
 
 画面右ペイン　Run workflowを選択　
