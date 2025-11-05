@@ -18,7 +18,7 @@ resource "aws_lb_target_group" "web_tg" {
 
 health_check {
   protocol            = "HTTP"
-  path                = "/healthz"   # ← 常に200
+  path                = "/"   # ← 常に200
   matcher             = "200-399"    # ← リダイレクトも許容
   port                = "traffic-port"
   interval            = 10
