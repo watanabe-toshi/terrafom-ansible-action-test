@@ -18,6 +18,7 @@ https://github.com/stsuda218/test-ansible
 | EC2 | Ansible実行サーバ ×1（Public）<br>Webサーバ ×2（Private） |
 | Application Load Balancer | Public ALB |
 | Target Group | Private Webサーバを登録 |
+| IAM Role | EC2インスタンスに付与 |
 
 ### 🛠 補足
 - Ansible実行サーバには`userdata` による `suqid` のインストール
