@@ -50,3 +50,12 @@ JSON Arrayの入力例:
 
 ```json
 ["10.0.1.0/28", "10.0.2.0/28"]
+
+## 備忘
+GitHub ActionsとAWSの認証の流れ
+1. GitHub OIDC プロバイダーをAWSアカウント側で準備
+2. 信頼関係を登録したGitHubリポジトリ用のIAM Roleを用意
+(Settings→Security→Actions→Actions secrets and variablesよりRepository secretsにIAM Role ARNを指定)
+3. GitHub ActionsワークフローでAssume Roleを指定
+
+
