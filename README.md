@@ -1,5 +1,7 @@
 # terraform-ansible-action-test
 
+※2025/11/14時点でS3/DynamoDB/OIDC無効化したため利用不可
+
 ## 📝 概要
 TerraformでAnsible実行環境を構築し、GitHub Actionsを用いて自動デプロイを行うリポジトリです。
 
