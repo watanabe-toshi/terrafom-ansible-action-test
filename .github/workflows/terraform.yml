@@ -1,5 +1,11 @@
 name: Terraform Apply/Destroy
 
+run-name: >
+  TF:${{ inputs.action }} |
+  project=${{ inputs.project_name }} |
+  key=${{ inputs.tf_state_key }}
+
+
 on:
   workflow_dispatch:
     inputs:
