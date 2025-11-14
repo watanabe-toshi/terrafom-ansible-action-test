@@ -50,6 +50,7 @@ JSON Arrayの入力例:
 
 ```json
 ["10.0.1.0/28", "10.0.2.0/28"]
+```
 
 ## 備忘
 GitHub ActionsとAWSの認証の流れ
